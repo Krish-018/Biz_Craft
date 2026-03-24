@@ -1,0 +1,582 @@
+// src/Pages/Dashboard/BusinessGuide.jsx
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { useDashboard } from "../../context/DashboardContext";
+import {
+  BookOpen,
+  Search,
+  Filter,
+  ChevronRight,
+  Star,
+  Clock,
+  Users,
+  TrendingUp,
+  Shield,
+  DollarSign,
+  Award,
+  PlayCircle,
+  FileSpreadsheet,
+  BookMarked,
+  ExternalLink,
+  Grid,
+  List,
+  Plus,
+  Check,
+  Sparkles,
+  X,
+  Eye,
+  Heart,
+  Share2,
+  Mail,
+  Calendar,
+  Tag,
+  Layers,
+  Zap,
+  Rocket,
+  Gift,
+  ThumbsUp,
+  MessageCircle,
+  AlertCircle,
+  Info,
+  Lightbulb,
+  HelpCircle,
+  RefreshCw,
+  Trash2,
+  ArrowRight,
+  Layout,
+  Filter as FilterIcon,
+  ChevronDown,
+  SlidersHorizontal,
+  Download,
+  Video,
+  Image as ImageIcon
+} from "lucide-react";
+import { toast } from "react-hot-toast";
+
+// Styles
+const styles = `
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  
+  .animate-slideUp {
+    animation: slideUp 0.4s ease-out forwards;
+  }
+  
+  .animate-scaleIn {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+  
+  .stagger-item {
+    opacity: 0;
+    animation: slideUp 0.4s ease-out forwards;
+  }
+  
+  .stagger-item:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-item:nth-child(2) { animation-delay: 0.15s; }
+  .stagger-item:nth-child(3) { animation-delay: 0.2s; }
+  .stagger-item:nth-child(4) { animation-delay: 0.25s; }
+  .stagger-item:nth-child(5) { animation-delay: 0.3s; }
+  
+  .hover-lift {
+    transition: all 0.2s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.2);
+  }
+`;
+
+// Placeholder images for guides
+const placeholderImages = [
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%234339ca'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-family='Arial'%3E📚%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23059669'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-family='Arial'%3E💰%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%239334ea'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-family='Arial'%3E⚖️%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23dc2626'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-family='Arial'%3E📊%3C/text%3E%3C/svg%3E",
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23ea580c'/%3E%3Ctext x='50' y='65' font-size='40' text-anchor='middle' fill='white' font-family='Arial'%3E🎥%3C/text%3E%3C/svg%3E"
+];
+
+const BusinessGuide = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { 
+    dashboardItems, 
+    removeFromDashboard, 
+    refreshDashboard 
+  } = useDashboard();
+  
+  const [myGuides, setMyGuides] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState("grid");
+  const [sortBy, setSortBy] = useState("recent");
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Load guides from dashboard context
+  useEffect(() => {
+    loadMyGuides();
+  }, [dashboardItems.guides]);
+
+  const loadMyGuides = () => {
+    setLoading(true);
+    // Get guides from dashboard context with proper structure
+    const guides = (dashboardItems.guides || []).map(guide => ({
+      ...guide,
+      title: guide.title || "Untitled Guide",
+      description: guide.description || "No description available",
+      author: guide.author || "BizCraft",
+      readTime: guide.readTime || "5 min",
+      rating: guide.rating || 4.5,
+      addedAt: guide.addedAt || new Date().toISOString(),
+      category: guide.category || "General",
+      type: guide.type || "Guide",
+      image: guide.image || placeholderImages[Math.floor(Math.random() * placeholderImages.length)],
+      color: guide.color || getRandomColor()
+    }));
+    
+    setMyGuides(guides);
+    setLoading(false);
+  };
+
+  // Helper to get random color for placeholder
+  const getRandomColor = () => {
+    const colors = ['blue', 'green', 'purple', 'red', 'orange', 'pink'];
+    return colors[Math.floor(Math.random() * colors.length)];
+  };
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await refreshDashboard();
+    setRefreshing(false);
+    toast.success("Dashboard updated");
+  };
+
+  const handleRemoveGuide = async (guideId, e) => {
+    e.stopPropagation();
+    if (window.confirm('Remove this guide from your dashboard?')) {
+      await removeFromDashboard('guides', guideId);
+      toast.success('Guide removed from dashboard');
+    }
+  };
+
+  const handleViewGuide = (guideId) => {
+    navigate(`/guides/${guideId}`);
+  };
+
+  const handleBrowseGuides = () => {
+    navigate('/guides');
+  };
+
+  // Get unique categories from user's guides
+  const categories = ["all", ...new Set(myGuides.map(guide => guide.category).filter(Boolean))];
+
+  // Filter and sort guides
+  const filteredGuides = myGuides
+    .filter(guide => {
+      const matchesSearch = searchTerm === "" ||
+        guide.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        guide.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        guide.author?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesCategory = filterCategory === "all" || guide.category === filterCategory;
+      
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      switch(sortBy) {
+        case "recent":
+          return new Date(b.addedAt || 0) - new Date(a.addedAt || 0);
+        case "title":
+          return (a.title || "").localeCompare(b.title || "");
+        case "rating":
+          return (b.rating || 0) - (a.rating || 0);
+        default:
+          return 0;
+      }
+    });
+
+  const GuideCard = ({ guide }) => {
+    const color = guide.color || 'blue';
+    const formattedDate = guide.addedAt ? new Date(guide.addedAt).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    }) : 'Recently';
+
+    return (
+      <div
+        onClick={() => handleViewGuide(guide.id)}
+        className="group relative bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-lg transition-all cursor-pointer overflow-hidden hover-lift stagger-item"
+      >
+        <div className="p-5">
+          {/* Header with Icon/Image and Title */}
+          <div className="flex items-start gap-3 mb-3">
+            <div className={`w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-${color}-100`}>
+              {guide.image ? (
+                <img 
+                  src={guide.image} 
+                  alt={guide.title}
+                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = placeholderImages[0];
+                  }}
+                />
+              ) : (
+                <div className={`w-full h-full flex items-center justify-center bg-${color}-100 text-${color}-600 text-2xl`}>
+                  {guide.title.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
+
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-gray-800 group-hover:text-blue-600 transition-colors line-clamp-2">
+                {guide.title}
+              </h3>
+              <p className="text-sm text-gray-500 mt-1">{guide.author}</p>
+            </div>
+
+            <button
+              onClick={(e) => handleRemoveGuide(guide.id, e)}
+              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex-shrink-0"
+              title="Remove from dashboard"
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+
+          {guide.description && (
+            <p className="text-sm text-gray-600 mb-3 line-clamp-2">{guide.description}</p>
+          )}
+
+          <div className="flex flex-wrap gap-1 mb-3">
+            <span className={`px-2 py-0.5 bg-${color}-100 text-${color}-600 text-xs rounded-full`}>
+              {guide.category}
+            </span>
+            {guide.type && (
+              <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full">
+                {guide.type}
+              </span>
+            )}
+          </div>
+
+          <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+            <span className="flex items-center gap-1">
+              <Clock size={12} />
+              {guide.readTime}
+            </span>
+            <span className="flex items-center gap-1">
+              <Star size={12} className="text-yellow-400 fill-current" />
+              {guide.rating}
+            </span>
+            <span className="flex items-center gap-1">
+              <Calendar size={12} />
+              {formattedDate}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+            <button
+              onClick={() => handleViewGuide(guide.id)}
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+            >
+              Read Guide
+              <ArrowRight size={14} />
+            </button>
+            <div className="flex items-center gap-1 text-xs text-gray-400">
+              <BookOpen size={12} />
+              <span>Guide</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="max-w-md w-full text-center">
+          <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <BookOpen size={32} className="text-blue-600" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Please Login</h2>
+          <p className="text-gray-600 mb-6">Login to view your saved guides</p>
+          <div className="flex gap-3 justify-center">
+            <button
+              onClick={() => navigate('/login')}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => navigate('/register')}
+              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+            >
+              Register
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 pb-20 md:pb-6">
+      <style>{styles}</style>
+
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+        <div className="px-4 py-4 md:px-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold text-gray-800 flex items-center gap-2">
+                <BookMarked className="text-blue-600" size={24} />
+                My Business Guides
+              </h1>
+              <p className="text-sm text-gray-500 mt-1">
+                {myGuides.length} {myGuides.length === 1 ? 'guide' : 'guides'} saved to your dashboard
+              </p>
+            </div>
+            
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="p-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 disabled:opacity-50"
+                title="Refresh"
+              >
+                <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
+              </button>
+              <button
+                onClick={handleBrowseGuides}
+                className="flex-1 sm:flex-none px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center justify-center gap-2 text-sm font-medium"
+              >
+                <Plus size={18} />
+                Browse Guides
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="px-4 md:px-6 pt-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+          <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl p-4 text-white">
+            <BookOpen size={20} className="mb-2 opacity-80" />
+            <p className="text-2xl font-bold">{myGuides.length}</p>
+            <p className="text-xs opacity-80">Total Guides</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-200">
+            <Clock size={20} className="text-blue-600 mb-2" />
+            <p className="text-2xl font-bold text-gray-800">
+              {myGuides.reduce((acc, g) => {
+                const time = parseInt(g.readTime) || 0;
+                return acc + time;
+              }, 0)} min
+            </p>
+            <p className="text-xs text-gray-500">Reading Time</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-200">
+            <Award size={20} className="text-yellow-600 mb-2" />
+            <p className="text-2xl font-bold text-gray-800">
+              {(myGuides.reduce((acc, g) => acc + (g.rating || 0), 0) / (myGuides.length || 1)).toFixed(1)}
+            </p>
+            <p className="text-xs text-gray-500">Avg Rating</p>
+          </div>
+          <div className="bg-white rounded-xl p-4 border border-gray-200">
+            <TrendingUp size={20} className="text-green-600 mb-2" />
+            <p className="text-2xl font-bold text-gray-800">
+              {myGuides.filter(g => g.progress && g.progress < 100).length}
+            </p>
+            <p className="text-xs text-gray-500">In Progress</p>
+          </div>
+        </div>
+
+        {/* Search and Filters */}
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Search your guides..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          
+          <div className="flex gap-2">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+            >
+              <option value="recent">Recently Added</option>
+              <option value="title">Title</option>
+              <option value="rating">Rating</option>
+            </select>
+
+            {categories.length > 2 && (
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white"
+              >
+                <option value="all">All Categories</option>
+                {categories.filter(c => c !== "all").map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
+            )}
+
+            <div className="flex bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-lg transition-colors ${
+                  viewMode === 'grid' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500'
+                }`}
+              >
+                <Grid size={18} />
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`p-2 rounded-lg transition-colors ${
+                  viewMode === 'list' ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500'
+                }`}
+              >
+                <List size={18} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Content */}
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
+            <p className="text-gray-500 mt-3">Loading your guides...</p>
+          </div>
+        ) : filteredGuides.length === 0 ? (
+          <div className="text-center py-12 bg-white rounded-xl border border-gray-200">
+            <div className="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BookOpen size={32} className="text-blue-600" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">No guides yet</h3>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+              {searchTerm || filterCategory !== "all" 
+                ? "No guides match your search criteria" 
+                : "You haven't added any guides to your dashboard yet"}
+            </p>
+            <button
+              onClick={handleBrowseGuides}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 inline-flex items-center gap-2"
+            >
+              <Plus size={18} />
+              Browse Guides
+            </button>
+          </div>
+        ) : viewMode === 'grid' ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredGuides.map(guide => (
+              <GuideCard key={guide.id} guide={guide} />
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Guide</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Category</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Added</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Read Time</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500">Rating</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-gray-500">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {filteredGuides.map(guide => {
+                  const formattedDate = guide.addedAt ? new Date(guide.addedAt).toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                  }) : 'Recently';
+
+                  return (
+                    <tr 
+                      key={guide.id} 
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() => handleViewGuide(guide.id)}
+                    >
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center overflow-hidden">
+                            {guide.image ? (
+                              <img 
+                                src={guide.image} 
+                                alt={guide.title}
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  e.target.onerror = null;
+                                  e.target.src = placeholderImages[0];
+                                }}
+                              />
+                            ) : (
+                              <BookOpen size={16} className="text-blue-600" />
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-800">{guide.title}</p>
+                            <p className="text-xs text-gray-500">{guide.author}</p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">
+                          {guide.category}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{formattedDate}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{guide.readTime}</td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center gap-1">
+                          <Star size={12} className="text-yellow-400 fill-current" />
+                          <span className="text-sm">{guide.rating}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemoveGuide(guide.id, e);
+                          }}
+                          className="p-1 text-gray-400 hover:text-red-600"
+                          title="Remove from dashboard"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default BusinessGuide;
