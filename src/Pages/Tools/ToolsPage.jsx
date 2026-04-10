@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTools } from '../../context/ToolsContext';
 import { useActivity } from '../../context/ActivityContext';
-import Navbar from '../../Components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import { 
   Search, 
   Filter, 
