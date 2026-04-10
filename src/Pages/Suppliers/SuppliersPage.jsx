@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useDashboard } from '../../context/DashboardContext';
 import { useAccess } from '../../context/AccessContext';
 import { useActivity } from '../../context/ActivityContext';
-import Navbar from '../../Components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import { 
   Search, 
   Building2, 
