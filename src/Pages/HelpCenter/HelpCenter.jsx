@@ -1,7 +1,7 @@
 // src/Pages/HelpCenter/HelpCenter.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom'; // Add this import
-import Navbar from '../../Components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import {
   Search,
   HelpCircle,
