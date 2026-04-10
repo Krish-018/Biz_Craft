@@ -11,6 +11,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -26,22 +27,46 @@ const db = mysql.createConnection({
 // Connect to database
 db.connect((err) => {
     if (err) {
-        console.error('Database connection failed:', err);
+        console.error('❌ Database connection failed:', err.message);
     } else {
-        console.log('Connected to database successfully');
+        console.log('✅ Connected to database successfully');
     }
+});
+
+// ============================================
+// ROOT ROUTE - This fixes the 404 error
+// ============================================
+app.get('/', (req, res) => {
+    res.json({
+        message: '🚀 BizCraft API is running!',
+        status: 'active',
+        endpoints: {
+            health: '/api/health',
+            guides: '/api/guides',
+            suppliers: '/api/suppliers',
+            tools: '/api/tools',
+            calculators: '/api/calculators',
+            login: '/api/login (POST)',
+            register: '/api/register (POST)'
+        },
+        timestamp: new Date().toISOString()
+    });
 });
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'BizCraft API is running' });
+    res.json({ 
+        status: 'OK', 
+        message: 'BizCraft API is running',
+        timestamp: new Date().toISOString()
+    });
 });
 
 // Get all guides
 app.get('/api/guides', (req, res) => {
     db.query('SELECT * FROM guides', (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Database error:', err);
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(results);
@@ -52,7 +77,7 @@ app.get('/api/guides', (req, res) => {
 app.get('/api/suppliers', (req, res) => {
     db.query('SELECT * FROM suppliers', (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Database error:', err);
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(results);
@@ -63,7 +88,7 @@ app.get('/api/suppliers', (req, res) => {
 app.get('/api/tools', (req, res) => {
     db.query('SELECT * FROM tools', (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Database error:', err);
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(results);
@@ -74,7 +99,7 @@ app.get('/api/tools', (req, res) => {
 app.get('/api/calculators', (req, res) => {
     db.query('SELECT * FROM calculators', (err, results) => {
         if (err) {
-            console.error(err);
+            console.error('Database error:', err);
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(results);
@@ -132,7 +157,10 @@ app.post('/api/register', async (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
     console.log(`📍 API URL: http://localhost:${PORT}`);
+    console.log(`✅ Health check: http://localhost:${PORT}/api/health`);
 });
+
+export default app;
