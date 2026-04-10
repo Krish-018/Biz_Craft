@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAccess } from '../../context/AccessContext';
 import { useAuth } from '../../context/AuthContext';
 import { useActivity } from '../../context/ActivityContext';
-import Navbar from '../../Components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import { 
   Search, 
   BookOpen, 
