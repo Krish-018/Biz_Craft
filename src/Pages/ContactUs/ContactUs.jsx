@@ -1,7 +1,7 @@
 // src/Pages/ContactUs/ContactUs.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../../Components/Navbar/Navbar';
+import Navbar from '../../components/Navbar/Navbar';
 import {
   Mail,
   Phone,
