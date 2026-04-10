@@ -12,34 +12,34 @@ import { DashboardProvider } from './context/DashboardContext';
 // Layouts
 import DashboardLayout from './layouts/DashboardLayout';
 
-// Pages
-import Home from './pages/Home/Home';
-import Login from './pages/Login/Login';
-import Register from './pages/Register/Register';
-import GuidesPage from './pages/Guides/GuidesPage';
-import GuideDetail from './pages/Guides/GuideDetail';
-import SuppliersPage from './pages/Suppliers/SuppliersPage';
-import SupplierDetail from './pages/Suppliers/SupplierDetail';
-import ToolsPage from './pages/Tools/ToolsPage';
-import ToolDetail from './pages/Tools/ToolDetail';
-import MyToolsPage from './pages/MyTools/MyToolsPage';
-import CalculatorsPage from './pages/Calculators/CalculatorsPage';
-import CalculatorDetail from './pages/Calculators/CalculatorDetail';
-import HelpCenter from './pages/HelpCenter/HelpCenter';
-import ContactUs from './pages/ContactUs/ContactUs';
-import Dashboard from './pages/Dashboard/Dashboard';
-import BusinessTools from './pages/BusinessTools/BusinessTools';
-import BusinessGuide from './pages/Dashboard/BusinessGuide';
-import SupplierDirectory from './pages/SupplierDirectory/SupplierDirectory';
-import DashboardCalculators from './pages/Dashboard/DashboardCalculators';
-import Profile from './pages/Profile/Profile';
-import Settings from './pages/Settings/Settings';
-import NotFound from './pages/NotFound/NotFound';
-import SearchResults from './pages/Search/SearchResults';
+// Pages - NOTE: Using capital 'Pages' folder name
+import Home from './Pages/Home/Home';
+import Login from './Pages/Login/Login';
+import Register from './Pages/Register/Register';
+import GuidesPage from './Pages/Guides/GuidesPage';
+import GuideDetail from './Pages/Guides/GuideDetail';
+import SuppliersPage from './Pages/Suppliers/SuppliersPage';
+import SupplierDetail from './Pages/Suppliers/SupplierDetail';
+import ToolsPage from './Pages/Tools/ToolsPage';
+import ToolDetail from './Pages/Tools/ToolDetail';
+import MyToolsPage from './Pages/MyTools/MyToolsPage';
+import CalculatorsPage from './Pages/Calculators/CalculatorsPage';
+import CalculatorDetail from './Pages/Calculators/CalculatorDetail';
+import HelpCenter from './Pages/HelpCenter/HelpCenter';
+import ContactUs from './Pages/ContactUs/ContactUs';
+import Dashboard from './Pages/Dashboard/Dashboard';
+import BusinessTools from './Pages/BusinessTools/BusinessTools';
+import BusinessGuide from './Pages/Dashboard/BusinessGuide';
+import SupplierDirectory from './Pages/SupplierDirectory/SupplierDirectory';
+import DashboardCalculators from './Pages/Dashboard/DashboardCalculators';
+import Profile from './Pages/Profile/Profile';
+import Settings from './Pages/Settings/Settings';
+import NotFound from './Pages/NotFound/NotFound';
+import SearchResults from './Pages/Search/SearchResults';
 
-// Components
-import ScrollToTop from './components/ScrollToTop/ScrollToTop';
-import Breadcrumb from './components/Breadcrumb/Breadcrumb';
+// Components - NOTE: Using capital 'Components' folder name
+import ScrollToTop from './Components/ScrollToTop/ScrollToTop';
+import Breadcrumb from './Components/Breadcrumb/Breadcrumb';
 
 // Loading Component
 const LoadingSpinner = () => (
