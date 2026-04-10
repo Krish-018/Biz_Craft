@@ -37,9 +37,9 @@ import Settings from './Pages/Settings/Settings';
 import NotFound from './Pages/NotFound/NotFound';
 import SearchResults from './Pages/Search/SearchResults';
 
-// Components - NOTE: Using capital 'Components' folder name
-import ScrollToTop from './Components/ScrollToTop/ScrollToTop';
-import Breadcrumb from './Components/Breadcrumb/Breadcrumb';
+// Components - NOTE: Using lowercase 'components' folder name
+import ScrollToTop from './components/ScrollToTop/ScrollToTop';
+import Breadcrumb from './components/Breadcrumb/Breadcrumb';
 
 // Loading Component
 const LoadingSpinner = () => (
